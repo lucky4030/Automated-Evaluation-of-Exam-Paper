@@ -1,13 +1,16 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">Paper Evaluator</a>
+  <a class="navbar-brand" href="#">
+    <img src="../assets/app-logo.png" alt="App logo" width = "15%" >
+    Paper Evaluator
+  </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="https://www.geeksforgeeks.org/understanding-tf-idf-term-frequency-inverse-document-frequency/"> Algorithm Link</a>
+    <ul class="navbar-nav" style="margin-top:5px;">
+      <li class="nav-item" style="margin-right: 30px;" >
+        <a class="nav-link" target="_blank" href="https://www.geeksforgeeks.org/understanding-tf-idf-term-frequency-inverse-document-frequency/"> Algorithm Link</a>
       </li>
       <li class="nav-item active">
         <a class="nav-link" href="#">About us </a>
@@ -31,16 +34,21 @@
   <!-- <form> -->
     <h1 > Automated Examination Paper Evaluation! </h1>
     <hr>
-    <div class=" row sm-6">
+    <!-- <div class=" row sm-6">
       <label for="sampleInput">Sample Answer</label>
       <input type="text"  id="sampleInput" 
         placeholder="Enter sample ans..." (keyup)="setSample( $event )" >
-    </div>
+    </div> -->
 
-    <div class=" row sm-6" style="margin-top: 30px;">
-      <label for="testInput">Test Answer</label>
-      <input type="text"  id="testInput" 
-        placeholder="enter test ans..." (keyup)="setTest( $event ) ">
+    <!-- <div class=" test-answer row" style="margin-top: 30px;">
+      <div class=" col-sm-7 mt-3">
+        <label for="testInput" style="margin-right: 10px;">Test Answer</label>
+        <input type="text"  id="testInput" style="width: -webkit-fill-available;"
+          placeholder="enter test ans..." (keyup)="setTest( $event ) ">
+      </div>
+      <div class="col" style="margin-top: 3.1%;">
+        <img src="../assets/add-more.png" class="add-more-button" (click) = "addMoreTestField()" >
+      </div>
     </div>
 
     <button  class="btn btn-primary" 
@@ -49,7 +57,43 @@
     
     <div class="success" *ngIf=" resultStatus " >
       Result = {{result}}%
-    </div>
+    </div> -->
   <!-- </form> -->
+
+
+
+  <form [formGroup]="answerForm" (ngSubmit)="onSubmit()">  
+      
+    <p>  
+      <label for="sampleAnswer">Sample Test Answer:</label>  
+      <input type="text" id="sampleAnswer" name="sampleAnswer" formControlName="sampleAnswer" class="form-control">  
+    </p>  
+    
+    <table class="table table-bordered" formArrayName="answer">  
+      <tr>  
+        <th colspan="2">Add Multiple Test Answers:</th>  
+        <th width="150px"><button type="button" (click)="addAnswer()" class="btn btn-secondary">Add More</button></th>  
+      </tr>  
+      <tr *ngFor="let answer of answer().controls; let i=index" [formGroupName]="i">  
+        <td>  
+            Test Answer :  
+            <input type="text" formControlName="testAnswer" class="form-control">  
+        </td>    
+        <td>
+            Match Score: 
+            <input type="text" formControlName="score"  class="form-control" >
+        </td>
+        <td>  
+            <button (click)="removeAnswer(i)" class="btn btn-danger">Remove</button>  
+        </td>  
+      </tr>  
+    </table>  
+     
+    <button type="submit" class="btn btn-success">Submit</button>  
+      
+  </form>  
+
+
+
 </div>
 <app-spinner></app-spinner>

@@ -4,3 +4,20 @@
     font-size: 20px;
     padding: 10px;
 }
+.navbar-brand{
+    margin-left: 3rem;
+    font-size: 32px;
+}
+
+.nav-item{
+    background-color: lightgoldenrodyellow;
+    border-radius: 20px;
+}
+
+.navbar{
+    background-color: rgb(107, 175, 44) !important;
+}
+
+.add-more-button{
+    width: 8%;
+}

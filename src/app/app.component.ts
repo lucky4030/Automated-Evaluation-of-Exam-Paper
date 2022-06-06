@@ -1,7 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { sample, sampleTime } from 'rxjs';
 import axios from 'axios';
 import { SpinnerService } from './spinner/spinner.service';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';  
 
 @Component({
   selector: 'app-root',
@@ -9,44 +16,51 @@ import { SpinnerService } from './spinner/spinner.service';
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent {
+export class AppComponent implements OnInit{
   
-  constructor( private spinnerService : SpinnerService ) { }
+  orderForm: any = FormGroup;
+  rows: any = FormArray;
+
+  answerForm: FormGroup;  
+  sampleAnswer = "";
+  constructor( private formBuilder: FormBuilder, private spinnerService : SpinnerService ) { 
+        this.answerForm = this.formBuilder.group({  
+        sampleAnswer: '',  
+        answer: this.formBuilder.array([]) ,  
+    });
+  }
+
+
+  ngOnInit(){}
+
 
   result:number = 0;
   resultStatus :boolean = false;
-  sampleAnswer = '';
-  testAnswer = '';
-  //https://medium.com/tech-insights/how-to-deploy-angular-apps-to-github-pages-gh-pages-896c4e10f9b4
-  // for deployment!
+  
+  // //https://medium.com/tech-insights/how-to-deploy-angular-apps-to-github-pages-gh-pages-896c4e10f9b4
+  // // for deployment!
   payload : object = { 'sample' :'', 'test' : ''};
 
-  setSample( vari : any ){
-    this.sampleAnswer = vari.target.value;
-    // console.log( this.sampleAnswer )
-  }
-  setTest(vari : any ){
-    this.testAnswer = vari.target.value;
-    // console.log( this.testAnswer );
-  }
-
-
-  onClickCond(  ){
-    if( this.sampleAnswer == '' ) alert('Please enter sample Answer !');
-    else{
+  CalculateScore( sampleAnswer:string, testAnswer:string  ): any {
+    var cal:number = 0;
+    if( sampleAnswer == '' ) alert('Please enter sample Answer !');
+    else
+    {
       
-      this.payload = { 'sample': this.sampleAnswer, 'test': this.testAnswer };
+      this.payload = { 'sample': sampleAnswer, 'test': testAnswer };
       
       this.spinnerService.requestStarted();
-
+      
       axios.defaults.headers.post['Content-Type'] ='application/json;charset=utf-8';
       axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
       axios.post( 'https://fierce-mountain-53124.herokuapp.com/', this.payload )
       .then( response => {
-          console.log(response) 
-          this.resultStatus = true
-          this.result = response['data'] * 100
+          console.log(response['data'] +"%") 
+          // this.resultStatus = true
           this.spinnerService.requestEnded();
+          return response['data'] * 100
+          
+          // return cal;
         })
       .catch(error => {
           // element.parentElement.innerHTML = `Error: ${error.message}`;
@@ -54,6 +68,63 @@ export class AppComponent {
           console.error('There was an error!', error);
       });
       console.log( this.payload );
+      return cal;
     }
+    
   }
+
+  // addMoreTestField(){
+  //   let row = document.createElement('div');  
+  //     row.className = 'row';
+  //     row.innerHTML = ``;
+      
+  //     document.getElementsByClassName('.test-answer');
+      
+  //   console.log("add called!")
+  // }
+
+
+  answer() : FormArray {  
+    return this.answerForm.get("answer") as FormArray  
+  }  
+     
+  newAnswer(): FormGroup {  
+    return this.formBuilder.group({  
+      testAnswer: '',
+      score:'',  
+    })  
+  }  
+     
+  addAnswer() {  
+    this.answer().push(this.newAnswer());  
+  }  
+     
+  removeAnswer(i:number) {  
+    this.answer().removeAt(i);  
+  }  
+
+
+  onSubmit() {  
+    // this.spinnerService.requestStarted();
+    // this.answer().at(0).value['score'] = "10"; // this need to be done, how to set score value?  , setValue
+    // this.answer().at(0).setValue({'testAnswer':"hmm", 'score': this.result }) // this how to set value
+    // console.log( this.answer().at(0).value  );
+   
+    const sampleAnswer = this.answerForm.value.sampleAnswer;
+    let answerCount =  this.answerForm.value.answer.length;
+    console.log( answerCount );
+    // console.log( sampleAnswer);
+    console.log(this.answerForm.value);  
+
+
+    for(let i=0; i<answerCount; i++){
+      const testAnswer = this.answer().at(i).value['testAnswer'];
+      const matchScore = this.CalculateScore( sampleAnswer, testAnswer );
+      console.log( testAnswer);
+      console.log( matchScore );
+      this.answer().at(i).setValue({'testAnswer': testAnswer, 'score': matchScore });
+    }
+
+  }  
+
 }
