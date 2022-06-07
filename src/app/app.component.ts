@@ -55,22 +55,19 @@ export class AppComponent implements OnInit{
       axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
       axios.post( 'https://fierce-mountain-53124.herokuapp.com/', this.payload )
       .then( response => {
-          console.log(response['data'] +"%") 
-          // this.resultStatus = true
+          // console.log(response['data'] +"%") 
           this.spinnerService.requestEnded();
           matchScore = response['data'] * 100
           this.answer().at(index).setValue({'testAnswer': testAnswer, 'score': matchScore });
-          // return matchScore;
         })
       .catch(error => {
-          // element.parentElement.innerHTML = `Error: ${error.message}`;
           this.spinnerService.resetSpinner();
           console.error('There was an error!', error);
           matchScore = -1;
           this.answer().at(index).setValue({'testAnswer': testAnswer, 'score': matchScore });
           alert( "didn't able calculate one of the test answer and it's Match score will be -1");
       });
-      console.log( this.payload );
+      // console.log( this.payload );
     }
     
   }
@@ -103,15 +100,15 @@ export class AppComponent implements OnInit{
    
     const sampleAnswer = this.answerForm.value.sampleAnswer;
     let answerCount =  this.answerForm.value.answer.length;
-    console.log( answerCount );
+    // console.log( answerCount );
     // console.log( sampleAnswer);
-    console.log(this.answerForm.value);  
+    // console.log(this.answerForm.value);  
 
 
     for(let i=0; i<answerCount; i++){
       const testAnswer = this.answer().at(i).value['testAnswer'];
       const matchScore = this.CalculateScore( sampleAnswer, testAnswer, i );
-      console.log( testAnswer);
+      // console.log( testAnswer);
       // console.log( matchScore );
       // this.answer().at(i).setValue({'testAnswer': testAnswer, 'score': matchScore });
     }

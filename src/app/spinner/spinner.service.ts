@@ -16,7 +16,6 @@ export class SpinnerService {
   }
 
   requestStarted() {
-    console.log("bolo to hai!!")
     if (++this.count === 1) {
       this.spinner$.next('start');
     }

@@ -21,7 +21,6 @@ export class SpinnerComponent implements OnInit {
   init() {
 
     this.spinnerService.getSpinnerObserver().subscribe((status) => {
-      console.log("sun liya !!!")
       this.showSpinner = (status === 'start');
       this.cdRef.detectChanges();
     });
