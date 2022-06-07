@@ -41,8 +41,8 @@ export class AppComponent implements OnInit{
   // // for deployment!
   payload : object = { 'sample' :'', 'test' : ''};
 
-  CalculateScore( sampleAnswer:string, testAnswer:string  ): any {
-    var cal:number = 0;
+  CalculateScore( sampleAnswer:string, testAnswer:string, index:number  ) {
+    var matchScore:number = 0;
     if( sampleAnswer == '' ) alert('Please enter sample Answer !');
     else
     {
@@ -58,31 +58,22 @@ export class AppComponent implements OnInit{
           console.log(response['data'] +"%") 
           // this.resultStatus = true
           this.spinnerService.requestEnded();
-          return response['data'] * 100
-          
-          // return cal;
+          matchScore = response['data'] * 100
+          this.answer().at(index).setValue({'testAnswer': testAnswer, 'score': matchScore });
+          // return matchScore;
         })
       .catch(error => {
           // element.parentElement.innerHTML = `Error: ${error.message}`;
           this.spinnerService.resetSpinner();
           console.error('There was an error!', error);
+          matchScore = -1;
+          this.answer().at(index).setValue({'testAnswer': testAnswer, 'score': matchScore });
+          alert( "didn't able calculate one of the test answer and it's Match score will be -1");
       });
       console.log( this.payload );
-      return cal;
     }
     
   }
-
-  // addMoreTestField(){
-  //   let row = document.createElement('div');  
-  //     row.className = 'row';
-  //     row.innerHTML = ``;
-      
-  //     document.getElementsByClassName('.test-answer');
-      
-  //   console.log("add called!")
-  // }
-
 
   answer() : FormArray {  
     return this.answerForm.get("answer") as FormArray  
@@ -119,10 +110,10 @@ export class AppComponent implements OnInit{
 
     for(let i=0; i<answerCount; i++){
       const testAnswer = this.answer().at(i).value['testAnswer'];
-      const matchScore = this.CalculateScore( sampleAnswer, testAnswer );
+      const matchScore = this.CalculateScore( sampleAnswer, testAnswer, i );
       console.log( testAnswer);
-      console.log( matchScore );
-      this.answer().at(i).setValue({'testAnswer': testAnswer, 'score': matchScore });
+      // console.log( matchScore );
+      // this.answer().at(i).setValue({'testAnswer': testAnswer, 'score': matchScore });
     }
 
   }  
