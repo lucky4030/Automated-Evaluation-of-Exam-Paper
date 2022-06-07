@@ -21,3 +21,11 @@
 .add-more-button{
     width: 8%;
 }
+
+button.btn.btn-secondary {
+    background-color: darkgray;
+}
+
+button.btn.btn-danger {
+    background-color: crimson;
+}
